@@ -1,7 +1,7 @@
-FILE_GAME = "kfm.txt"
+FILE_GAME = "Data game.txt"
 FILE_KOLEKSI = "koleksi.txt"
 
-# ===== WARNA ANSI =====
+
 RESET = "\033[0m"
 BOLD = "\033[1m"
 CYAN = "\033[96m"
@@ -19,9 +19,11 @@ def tampil_menu():
     print("║ 2.  📋 Tampilkan Semua Game        ║")
     print("║ 3.  ⭐ Tambah ke Koleksi           ║")
     print("║ 4.  💎 Lihat Koleksi Game          ║")
-    print("║ 5.  ❌ Keluar                      ║")
+    print("║ 5.  🔍 Cari Game (Judul/Tahun)     ║")
+    print("║ 6.  ❌ Keluar                      ║")
     print("╚════════════════════════════════════╝")
     print(RESET)
+
 
 # ---------- TAMBAH GAME ----------
 def tambah_game():
@@ -86,10 +88,45 @@ def lihat_koleksi():
     except FileNotFoundError:
         print(RED + "⚠ File koleksi belum ada" + RESET)
 
+# ---------- CARI GAME ----------
+def cari_game():
+    keyword = input("🔍 Masukkan judul atau tahun: ").lower()
+    ditemukan = False
+
+    try:
+        with open(FILE_GAME, "r") as file:
+            for baris in file:
+                baris = baris.strip()
+                if baris == "":
+                    continue  # lewati baris kosong
+
+                data = baris.split("|")
+                if len(data) != 5:
+                    continue  # lewati data rusak
+
+                judul, developer, device, genre, tahun = data
+
+                if keyword in judul.lower() or keyword in tahun:
+                    print(GREEN + "🎮 Game ditemukan!" + RESET)
+                    print(f"Judul     : {judul}")
+                    print(f"Developer : {developer}")
+                    print(f"Device    : {device}")
+                    print(f"Genre     : {genre}")
+                    print(f"Tahun     : {tahun}")
+                    print("-" * 30)
+                    ditemukan = True
+
+        if not ditemukan:
+            print(RED + "❌ Game tidak ditemukan" + RESET)
+
+    except FileNotFoundError:
+        print(RED + "⚠ File game belum ada, silakan tambah game dulu" + RESET)
+
+
 # ---------- PROGRAM UTAMA ----------
 while True:
     tampil_menu()
-    pilih = input("👉 Pilih menu (1-5): ")
+    pilih = input("👉 Pilih menu (1-6): ")
 
     if pilih == "1":
         tambah_game()
@@ -100,6 +137,8 @@ while True:
     elif pilih == "4":
         lihat_koleksi()
     elif pilih == "5":
+        cari_game()
+    elif pilih == "6":
         print(GREEN + "🙏 Program selesai" + RESET)
         break
     else:
